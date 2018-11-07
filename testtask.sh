@@ -26,10 +26,12 @@ if [[ -d 'inbox' && -d 'outbox' ]]; then
 	echo "Error report contents:"
 	cat $FILENAME-errors.txt
     fi
-    #rm -rvf ./inbox/*
+    # clear files only if acrhive was created
+    if [ -s "${FILENAME}.tar.gz" ]; then
+	rm -rvf ./inbox/*
+    fi
 else
     echo 'Failed :('
     exit -1
 fi
 echo "Archive $FILENAME.tar.gz success!"
-exit 0
