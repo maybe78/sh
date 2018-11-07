@@ -17,11 +17,16 @@ if [[ -d 'inbox' && -d 'outbox' ]]; then
     DIRNAME=$(date -n -r inbox '+outbox/%d-%m-%Y')
     FILENAME=$(date -n -r inbox '+outbox/%d-%m-%Y/%H-%M-%S')
     mkdir -pv $DIRNAME
+    #mkdir -pv $FILENAME
     # TODO: archive preserve in case of same name
     tar cvz -f $FILENAME.tar.gz inbox/*
-    # TODO: fail on 0 results
-    grep -h ^error\: ./inbox/*.log >$FILENAME-errors.txt
-    rm -rvf ./inbox/*
+    # Delete empty file on zero results
+    grep -h ^error\: ./inbox/*.log > $FILENAME-errors.txt
+    if [ -s "${FILENAME}-errors.txt" ]; then
+	echo "Error report contents:"
+	cat $FILENAME-errors.txt
+    fi
+    #rm -rvf ./inbox/*
 else
     echo 'Failed :('
     exit -1
